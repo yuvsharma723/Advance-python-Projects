@@ -1,10 +1,4 @@
-class bajra:
-    name="bajra"
-    seed_required_per_acre=45 # in kg
-    avg_yield_per_acre=14 # in quintals
-    msp=2425 # in rs per quintal
-    seed_rate= 48 # in rs/kg
-    miscelaneous_cost_per_acre= 15400 # in rs include water, fertilizer, labor etc
+class crop:
     def __init__(self):
         self.moisture_content= 75 # in percentage , can be fetched by the sensor
         i=0
@@ -15,6 +9,7 @@ class bajra:
             except :
                 print("Invalid input. Please enter a valid number.")
                 i=0
+    def calculate(self):
         self.seed_required= self.seed_required_per_acre * self.area_in_acres
         self.yield_amount= self.avg_yield_per_acre * self.area_in_acres
         self.revenue= self.msp * self.avg_yield_per_acre * self.area_in_acres
@@ -37,7 +32,15 @@ class bajra:
     def calculate_profit(self):
         
         print(f"estimated profit for {self.area_in_acres} acres is {self.profit} rs")
-bajra_farm = bajra()
+class bajra(crop):
+    name = "Bajra"
+    seed_required_per_acre = 2.5      # Typical for hybrid sowing
+    avg_yield_per_acre = 10           # Good average for a managed farm
+    msp = 2775                        # 2025-26 Expected MSP
+    seed_rate = 250                   # Hybrid seed cost per kg
+    miscelaneous_cost_per_acre = 6500 # Includes: Land prep (2k), Fertilizer (1.5k), Labor (2k), Misc (1k)
+bajra_farm= bajra()
+bajra_farm.calculate()
 if bajra_farm.moisture_content < 60:
     print("soil is dry, irrigation is needed")
 elif 60<= bajra_farm.moisture_content <= 80:
