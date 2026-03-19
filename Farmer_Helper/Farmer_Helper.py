@@ -1,37 +1,56 @@
 class crop:
+    name = "no crop is specified(hence everything is zero)"
+    seed_required_per_acre = 0     # Typical for hybrid sowing
+    avg_yield_per_acre = 0           # Good average for a managed farm
+    msp = 0                        # 2025-26 Expected MSP
+    seed_rate = 0                   # Hybrid seed cost per kg
+    miscelaneous_cost_per_acre = 0 # Includes: Land prep (2k), Fertilizer (1.5k), Labor (2k), Misc (1k)
     def __init__(self):
         self.moisture_content= 75 # in percentage , can be fetched by the sensor
-        i=0
-        while i==0:
+        if self.name == "no crop is specified(hence everything is zero)":
+            self.valid = False
+            print("No crop specified. Please specify a crop to get accurate calculations.")
+            return
+        self.valid = True
+        while True:
             try:
-                self.area_in_acres=float(input("enter the area in acres: "))
-                i=1
-            except :
+                self.area_in_acres=float(input(f"enter the area in acres for {self.name}: "))
+                break
+            except ValueError :
                 print("Invalid input. Please enter a valid number.")
-                i=0
-    def calculate(self):
+        
+        
         self.seed_required= self.seed_required_per_acre * self.area_in_acres
         self.yield_amount= self.avg_yield_per_acre * self.area_in_acres
         self.revenue= self.msp * self.avg_yield_per_acre * self.area_in_acres
         self.cost= self.seed_rate * self.seed_required_per_acre* self.area_in_acres + self.miscelaneous_cost_per_acre * self.area_in_acres
         self.profit= (self.msp * self.avg_yield_per_acre * self.area_in_acres) - (self.cost)
     def calculate_seed_required(self):
-        print(f"seed required for {self.area_in_acres} acres is {self.seed_required} kg")
+        if not self.valid:
+            return
+        
+        print(f"seed required for crop {self.name} in {self.area_in_acres} acres is {self.seed_required} kg")
 
     def calculate_yield(self):
-        
-        print(f"expected yield for {self.area_in_acres} acres is {self.yield_amount} quintals")
+        if not self.valid:
+            return
+        print(f"expected yield for crop {self.name} in {self.area_in_acres} acres is {self.yield_amount} quintals")
 
     def calculate_revenue(self):
-        
-        print(f"expected revenue for {self.area_in_acres} acres is {self.revenue} rs")
-
+        if not self.valid:
+            return
+        print(f"expected revenue for crop {self.name} in {self.area_in_acres} acres is {self.revenue} rs")
+    
     def calculate_cost(self):
-        
-        print(f"estimated cost for {self.area_in_acres} acres is {self.cost} rs")
+        if not self.valid:
+            return
+        print(f"estimated cost for crop {self.name} in {self.area_in_acres} acres is {self.cost} rs")
+
     def calculate_profit(self):
-        
-        print(f"estimated profit for {self.area_in_acres} acres is {self.profit} rs")
+        if not self.valid:
+            return
+        print(f"estimated profit for crop {self.name} in {self.area_in_acres} acres is {self.profit} rs")
+    
 class bajra(crop):
     name = "Bajra"
     seed_required_per_acre = 2.5      # Typical for hybrid sowing
@@ -40,7 +59,6 @@ class bajra(crop):
     seed_rate = 250                   # Hybrid seed cost per kg
     miscelaneous_cost_per_acre = 6500 # Includes: Land prep (2k), Fertilizer (1.5k), Labor (2k), Misc (1k)
 bajra_farm= bajra()
-bajra_farm.calculate()
 if bajra_farm.moisture_content < 60:
     print("soil is dry, irrigation is needed")
 elif 60<= bajra_farm.moisture_content <= 80:
@@ -52,3 +70,10 @@ bajra_farm.calculate_yield()
 bajra_farm.calculate_revenue()
 bajra_farm.calculate_cost()
 bajra_farm.calculate_profit()
+c = crop()
+c.calculate_seed_required()
+c.calculate_yield()
+c.calculate_revenue()
+b= bajra()
+b.calculate_seed_required()
+b.calculate_yield()
