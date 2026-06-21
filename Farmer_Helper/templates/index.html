@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f4fff4;
+    text-align:center;
+    padding:30px;
+}
+
+.result-card{
+    width:60%;
+    margin:auto;
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 15px rgba(0,0,0,0.1);
+}
+
+h1{
+    color:green;
+}
+
+.suggestion{
+    background:#e8ffe8;
+    padding:10px;
+    border-radius:10px;
+    margin:15px 0;
+    font-weight:bold;
+}
+
+hr{
+    margin:20px 0;
+}
+
+</style>
+<body>
+
+<h1>🌾 Smart Farming Assistant 🌾</h1>
+
+<form method="POST">
+
+    <label>Area (Acres):</label>
+    <input type="number"
+           name="area"
+           step="0.1"
+           required>
+
+    <br><br>
+
+    <button type="submit">
+        Calculate
+    </button>
+</form>
+
+<div class="result-card">
+
+    <h2>🌱 Recommended Crop</h2>
+    <h1>{{ best_crop }}</h1>
+
+    <p><strong>📊 Success Rate:</strong> {{ success_rate }}</p>
+
+    <div class="suggestion">
+        💡 {{ suggestion }}
+    </div>
+
+    <hr>
+
+    <p>🌿 <strong>Soil Status:</strong> {{ check_soil }}</p>
+
+    <p>🌾 <strong>Seed Required:</strong> {{ seed_required }} kg</p>
+
+    <p>📦 <strong>Expected Yield:</strong> {{ expected_yield }} Quintals</p>
+
+    <p>💰 <strong>Expected Revenue:</strong> ₹{{ revenue }}</p>
+
+    <p>💸 <strong>Estimated Cost:</strong> ₹{{ cost }}</p>
+
+    <p>🏆 <strong>Expected Profit:</strong> ₹{{ profit }}</p>
+
+</div>
+
+</body>
+</html>
