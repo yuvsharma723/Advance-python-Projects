@@ -1,5 +1,3 @@
-from statistics import mode
-
 from Farm_functions import *
 from flask import Flask, render_template, request
 
@@ -66,5 +64,6 @@ def home():
             cost=best_crop.calculate_cost()
             profit=best_crop.calculate_profit()
         return render_template("index.html", suggestion=suggestion,success_rate=success_rate_str, best_crop=best_crop_name, check_soil=check_soil, seed_required=seed_required, expected_yield=expected_yield, revenue=revenue, cost=cost, profit=profit)
+    return render_template("index.html")
 if __name__ == "__main__":
     app.run(debug=True)
