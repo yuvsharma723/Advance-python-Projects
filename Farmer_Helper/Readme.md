@@ -1,123 +1,212 @@
-# 🌾 Bajra Farming Profit Calculator
+# 🌾 Farmer Helper (किसान मित्र)
 
-A simple Python program to estimate **seed requirement, yield, revenue, cost, and profit** for Bajra farming based on user input (land area in acres) and predefined agricultural parameters.
+A Flask-based Smart Agriculture application that analyzes **soil pH**,
+**soil moisture**, and **farm area** to recommend the most suitable crop
+while estimating seed requirement, expected yield, revenue, cost, and
+profit.
 
----
+The system supports both **manual data entry** and **real-time ESP32
+sensor integration**, making it suitable for educational demonstrations
+and smart farming applications.
+
+------------------------------------------------------------------------
 
 ## 👨‍💻 Author
 
-- **Name:** Yuv Sharma  
-- **GitHub Username:** [yuvsharma723](https://github.com/yuvsharma723)
+**Yuv Sharma**
 
----
+GitHub: **[@yuvsharma723](https://github.com/yuvsharma723)**
 
-## 📌 Features
+------------------------------------------------------------------------
 
-- Calculates:
-  - 🌱 Seed required
-  - 🌾 Expected yield
-  - 💰 Revenue based on MSP
-  - 📉 Total cost
-  - 📈 Estimated profit
-- Soil moisture analysis:
-  - Suggests irrigation or drainage based on moisture level
-- Input validation for area
-- Simple and easy-to-understand structure using Python class
+# ✨ Features
 
----
+## 🌱 Smart Crop Recommendation
 
-## ⚙️ Parameters Used
+The application analyzes soil conditions and recommends the most
+suitable crop based on:
 
-| Parameter | Value | Description |
-|----------|------|-------------|
-| Seed required per acre | 45 kg | Standard seed usage |
-| Average yield per acre | 14 quintals | Expected production |
-| MSP (Minimum Support Price) | ₹2425/quintal | Government price |
-| Seed rate | ₹48/kg | Cost of seeds |
-| Miscellaneous cost | ₹15400/acre | Includes water, fertilizer, labor |
-| Moisture content | 75% | Default sensor value |
+-   Soil pH
+-   Soil Moisture
+-   Farm Area
 
----
+Currently supported crops:
 
-## 🚀 How It Works
+-   🌾 Bajra
+-   🌾 Wheat
+-   🌾 Rice
+-   🌼 Mustard
+-   🌱 Gram
 
-1. User inputs farm area (in acres)
-2. Program calculates:
-   - Total seed requirement
-   - Expected yield
-   - Revenue
-   - Total cost
-   - Profit
-3. Checks soil moisture condition:
-   - `< 60%` → Irrigation needed
-   - `60% - 80%` → Optimal
-   - `> 80%` → Drainage needed
+## 📊 Agricultural Calculations
 
----
+For the recommended crop, the application calculates:
 
-## 🧮 Formula Used
+-   🌱 Seed Requirement
+-   🌾 Expected Yield
+-   💰 Estimated Revenue
+-   💸 Estimated Cost
+-   📈 Estimated Profit
+-   📊 Success Rate
 
-- **Seed Required**  
-  `seed_required = seed_required_per_acre × area`
+## 🔬 Soil Analysis
 
-- **Yield**  
-  `yield = avg_yield_per_acre × area`
+The application evaluates:
 
-- **Revenue**  
-  `revenue = MSP × yield`
+-   Soil pH
+-   Soil Moisture
+-   Soil Suitability
+-   Irrigation/Drainage Suggestions
 
-- **Cost**  
-  `cost = (seed_rate × seed_required_per_acre × area) + (misc_cost × area)`
+## 🌐 Web Interface
 
-- **Profit**  
-  `profit = revenue - cost`
+Built using **Flask**, the web interface allows users to:
 
----
+-   Enter values manually
+-   Read live sensor data from ESP32
+-   View recommendations instantly
+-   Display soil information clearly
 
-## ▶️ How to Run
+## 🤖 ESP32 Sensor Integration
 
-1. Make sure Python is installed (Python 3.x recommended)
-2. Save the code in a file, e.g., `bajra.py`
-3. Run the script:
+Connected Sensors:
 
-```bash
-python bajra.py
+-   pH Sensor
+-   Capacitive Soil Moisture Sensor
+
+Sensor values are filtered, averaged, processed, and displayed on the
+web application.
+
+------------------------------------------------------------------------
+
+# 🛠 Technologies Used
+
+-   Python
+-   Arduino C++
+-   Flask
+-   HTML
+-   CSS
+-   ESP32
+
+------------------------------------------------------------------------
+
+# 📁 Project Structure
+
+``` text
+Farmer_Helper/
+│
+├── Farmer_Helper.py
+├── Farm_functions.py
+├── requirements.txt
+│
+├── Arduino/
+│   └── SmartSoilAnalyzer.ino
+│
+├── templates/
+│   └── index.html
+│
+├── static/
+│   └── style.css
+│
+└── README.md
 ```
 
-4.Enter the farm area when prompted
+------------------------------------------------------------------------
 
----
-## 📥 Sample Input
+# ⚙️ How It Works
 
+1.  User enters farm area.
+2.  Select **Manual Mode** or **Sensor Mode**.
+3.  The application receives soil pH and moisture values.
+4.  Soil conditions are evaluated.
+5.  Success rate is calculated for every crop.
+6.  The best crop is recommended.
+7.  The application displays:
+    -   Recommended Crop
+    -   Success Rate
+    -   Soil Analysis
+    -   Seed Requirement
+    -   Expected Yield
+    -   Revenue
+    -   Cost
+    -   Profit
+
+------------------------------------------------------------------------
+
+# 🚀 Installation
+
+Clone the repository
+
+``` bash
+git clone https://github.com/yuvsharma723/Farmer_Helper.git
 ```
-enter the area in acres: 2
+
+Install dependencies
+
+``` bash
+pip install -r requirements.txt
 ```
 
----
+Upload the Arduino sketch to the ESP32.
 
-## 📤 Sample Output
+Update the COM port inside `Farmer_Helper.py`.
 
-```
-soil moisture is optimal for growth
-seed required for 2.0 acres is 90.0 kg
-expected yield for 2.0 acres is 28.0 quintals
-expected revenue for 2.0 acres is 67900.0 rs
-estimated cost for 2.0 acres is 33720.0 rs
-estimated profit for 2.0 acres is 34180.0 rs
+Run:
+
+``` bash
+python Farmer_Helper.py
 ```
 
----
+Open:
 
-## 📦 Future Improvements
+    http://127.0.0.1:5000
 
-- Add GUI (Tkinter / Web App)
-- Real-time sensor integration for moisture
-- Support for multiple crops
-- Dynamic market price fetching
-- Data storage and analytics
+------------------------------------------------------------------------
 
----
+# 🔌 Serial Communication
 
-## 🙌 Acknowledgment
+ESP32 sends data in the format:
 
-Built as a basic agricultural calculator to help farmers estimate profitability and resource requirements efficiently.
+``` text
+ADC,pH,Moisture
+```
+
+Example:
+
+``` text
+1187,8.74,64
+```
+
+------------------------------------------------------------------------
+
+# 🌱 Future Improvements
+
+-   Live sensor dashboard
+-   Real-time graphs
+-   Weather API integration
+-   GPS-based soil mapping
+-   Cloud database support
+-   Live market prices
+-   Mobile application
+-   AI-based crop recommendation
+
+------------------------------------------------------------------------
+
+# 🤝 Contributing
+
+Contributions, suggestions, and improvements are welcome.
+
+------------------------------------------------------------------------
+
+# 📜 License
+
+This project is intended for educational and research purposes.
+
+------------------------------------------------------------------------
+
+# ⭐ About the Project
+
+**Farmer Helper** combines **ESP32**, **sensor technology**, and
+**Python Flask** to demonstrate how IoT can help farmers make informed
+agricultural decisions through real-time soil analysis and crop
+recommendation.
