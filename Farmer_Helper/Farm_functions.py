@@ -74,17 +74,19 @@ class crop:
         return self.profit
 
 class bajra(crop):
-    name = "Bajra"
+    name = "बाजरा"
     seed_required_per_acre = 2.5      # Typical for hybrid sowing
     avg_yield_per_acre = 10           # Good average for a managed farm
     msp = 2900                        # 2025-26 Expected MSP
     seed_rate = 250                   # Hybrid seed cost per kg
     miscelaneous_cost_per_acre = 6500 # Includes: Land prep (2k), Fertilizer (1.5k), Labor (2k), Misc (1k)
+
     ph_min = 6.5
     ph_max = 8.0
 
     moisture_min = 20
     moisture_max = 55
+
     def calculate_success_rate(self):
 
         # Ideal values (center of acceptable range)
@@ -92,16 +94,16 @@ class bajra(crop):
         moisture_opt = (self.moisture_min + self.moisture_max) / 2
 
         # Tolerance (how far crop can comfortably handle)
-        ph_tolerance = (self.ph_max - self.ph_min) 
-        moisture_tolerance = (self.moisture_max - self.moisture_min) 
+        ph_tolerance = (self.ph_max - self.ph_min)
+        moisture_tolerance = (self.moisture_max - self.moisture_min)
 
         # Gaussian scoring
         ph_score = 100 * math.exp(
-            -((self.actual_ph - ph_opt) / ph_tolerance*1.5) ** 2
+            -((self.actual_ph - ph_opt) / ph_tolerance * 1.5) ** 2
         )
 
         moisture_score = 100 * math.exp(
-            -((self.moisture_content - moisture_opt) / moisture_tolerance*1.5) ** 2
+            -((self.moisture_content - moisture_opt) / moisture_tolerance * 1.5) ** 2
         )
 
         # Final weighted score
@@ -111,8 +113,10 @@ class bajra(crop):
         )
 
         return round(success_rate, 2)
+
+
 class wheat(crop):
-    name = "Wheat"
+    name = "गेहूँ"
     seed_required_per_acre = 45
     avg_yield_per_acre = 18
     msp = 2585
@@ -124,6 +128,7 @@ class wheat(crop):
 
     moisture_min = 40
     moisture_max = 70
+
     def calculate_success_rate(self):
 
         # Ideal values (center of acceptable range)
@@ -131,16 +136,16 @@ class wheat(crop):
         moisture_opt = (self.moisture_min + self.moisture_max) / 2
 
         # Tolerance (how far crop can comfortably handle)
-        ph_tolerance = (self.ph_max - self.ph_min) 
-        moisture_tolerance = (self.moisture_max - self.moisture_min) 
+        ph_tolerance = (self.ph_max - self.ph_min)
+        moisture_tolerance = (self.moisture_max - self.moisture_min)
 
         # Gaussian scoring
         ph_score = 100 * math.exp(
-            -((self.actual_ph - ph_opt) / ph_tolerance*1.5) ** 2
+            -((self.actual_ph - ph_opt) / ph_tolerance * 1.5) ** 2
         )
 
         moisture_score = 100 * math.exp(
-            -((self.moisture_content - moisture_opt) / moisture_tolerance*1.5) ** 2
+            -((self.moisture_content - moisture_opt) / moisture_tolerance * 1.5) ** 2
         )
 
         # Final weighted score
@@ -150,8 +155,10 @@ class wheat(crop):
         )
 
         return round(success_rate, 2)
+
+
 class mustard(crop):
-    name = "Mustard"
+    name = "सरसों"
     seed_required_per_acre = 2
     avg_yield_per_acre = 8
     msp = 6200
@@ -163,6 +170,7 @@ class mustard(crop):
 
     moisture_min = 25
     moisture_max = 55
+
     def calculate_success_rate(self):
 
         # Ideal values (center of acceptable range)
@@ -170,16 +178,16 @@ class mustard(crop):
         moisture_opt = (self.moisture_min + self.moisture_max) / 2
 
         # Tolerance (how far crop can comfortably handle)
-        ph_tolerance = (self.ph_max - self.ph_min) 
-        moisture_tolerance = (self.moisture_max - self.moisture_min) 
+        ph_tolerance = (self.ph_max - self.ph_min)
+        moisture_tolerance = (self.moisture_max - self.moisture_min)
 
         # Gaussian scoring
         ph_score = 100 * math.exp(
-            -((self.actual_ph - ph_opt) / ph_tolerance*1.5) ** 2
+            -((self.actual_ph - ph_opt) / ph_tolerance * 1.5) ** 2
         )
 
         moisture_score = 100 * math.exp(
-            -((self.moisture_content - moisture_opt) / moisture_tolerance*1.5) ** 2
+            -((self.moisture_content - moisture_opt) / moisture_tolerance * 1.5) ** 2
         )
 
         # Final weighted score
@@ -189,8 +197,10 @@ class mustard(crop):
         )
 
         return round(success_rate, 2)
+
+
 class gram(crop):
-    name = "Gram"
+    name = "चना"
     seed_required_per_acre = 32
     avg_yield_per_acre = 7
     msp = 5875
@@ -202,6 +212,7 @@ class gram(crop):
 
     moisture_min = 35
     moisture_max = 60
+
     def calculate_success_rate(self):
 
         # Ideal values (center of acceptable range)
@@ -209,15 +220,16 @@ class gram(crop):
         moisture_opt = (self.moisture_min + self.moisture_max) / 2
 
         # Tolerance (how far crop can comfortably handle)
-        ph_tolerance = (self.ph_max - self.ph_min) 
-        moisture_tolerance = (self.moisture_max - self.moisture_min) 
+        ph_tolerance = (self.ph_max - self.ph_min)
+        moisture_tolerance = (self.moisture_max - self.moisture_min)
+
         # Gaussian scoring
         ph_score = 100 * math.exp(
-            -((self.actual_ph - ph_opt) / ph_tolerance*1.5) ** 2
+            -((self.actual_ph - ph_opt) / ph_tolerance * 1.5) ** 2
         )
 
         moisture_score = 100 * math.exp(
-            -((self.moisture_content - moisture_opt) / moisture_tolerance*1.5) ** 2
+            -((self.moisture_content - moisture_opt) / moisture_tolerance * 1.5) ** 2
         )
 
         # Final weighted score
@@ -227,8 +239,10 @@ class gram(crop):
         )
 
         return round(success_rate, 2)
+
+
 class rice(crop):
-    name = "Rice"
+    name = "धान"
     seed_required_per_acre = 10
     avg_yield_per_acre = 22
     msp = 2441
@@ -240,23 +254,24 @@ class rice(crop):
 
     moisture_min = 70
     moisture_max = 100
+
     def calculate_success_rate(self):
 
         # Ideal values (center of acceptable range)
         ph_opt = (self.ph_min + self.ph_max) / 2
-        moisture_opt = (self.moisture_min + self.moisture_max) /2
+        moisture_opt = (self.moisture_min + self.moisture_max) / 2
 
         # Tolerance (how far crop can comfortably handle)
-        ph_tolerance = (self.ph_max - self.ph_min) 
+        ph_tolerance = (self.ph_max - self.ph_min)
         moisture_tolerance = (self.moisture_max - self.moisture_min)
 
         # Gaussian scoring
         ph_score = 100 * math.exp(
-            -((self.actual_ph - ph_opt) / ph_tolerance*1.5) ** 2
+            -((self.actual_ph - ph_opt) / ph_tolerance * 1.5) ** 2
         )
 
         moisture_score = 100 * math.exp(
-            -((self.moisture_content - moisture_opt) / moisture_tolerance*1.5) ** 2
+            -((self.moisture_content - moisture_opt) / moisture_tolerance * 1.5) ** 2
         )
 
         # Final weighted score

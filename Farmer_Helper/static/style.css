@@ -1,0 +1,60 @@
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f4fff4;
+    text-align:center;
+    padding:30px;
+}
+
+.result-card{
+    width:60%;
+    margin:auto;
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 15px rgba(0,0,0,0.1);
+}
+
+h1{
+    color:green;
+}
+
+.suggestion{
+    background:#e8ffe8;
+    padding:10px;
+    border-radius:10px;
+    margin:15px 0;
+    font-weight:bold;
+}
+
+hr{
+    margin:20px 0;
+}
+.sensor-value{
+    font-size:20px;
+    font-weight:bold;
+    color:#2e7d32;
+}
+button{
+
+    background:#2e7d32;
+    color:white;
+
+    border:none;
+
+    padding:12px 20px;
+
+    border-radius:8px;
+
+    transition:.3s;
+
+}
+button:hover{
+
+    background:#1b5e20;
+
+}
+
+#manual-fields{
+    margin:15px 0;
+}

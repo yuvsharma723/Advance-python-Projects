@@ -1,61 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-<style>
-
-body{
-    font-family: Arial, sans-serif;
-    background:#f4fff4;
-    text-align:center;
-    padding:30px;
-}
-
-.result-card{
-    width:60%;
-    margin:auto;
-    background:white;
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 0 15px rgba(0,0,0,0.1);
-}
-
-h1{
-    color:green;
-}
-
-.suggestion{
-    background:#e8ffe8;
-    padding:10px;
-    border-radius:10px;
-    margin:15px 0;
-    font-weight:bold;
-}
-
-hr{
-    margin:20px 0;
-}
-
-button{
-    padding:10px 15px;
-    margin:5px;
-    cursor:pointer;
-}
-
-#manual-fields{
-    margin:15px 0;
-}
-
-</style>
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
 
-<h1>🌾 Smart Farming Assistant 🌾</h1>
+<h1>🌾 किसान मित्र 🌾</h1>
+
+<p><strong>{{ sensor_update }}</strong></p>
+
+<p><strong>🧪 pH :</strong>
+<span class="sensor-value">{{ sensor_ph }}</span></p>
+
+<p><strong>💧 नमी :</strong>
+<span class="sensor-value">{{ sensor_moisture }}</span></p>
 
 <form method="POST">
 
-    <label>Area (Acres):</label>
-    <input type="number"
+    <label>क्षेत्रफल (एकड़):</label>
+
+    <input
+       type="number"
        name="area"
        step="0.00001"
        min="0.0001"
@@ -64,35 +31,39 @@ button{
     <br><br>
 
     <button type="button" onclick="showManual()">
-        Manual Input
+        स्वयं मान दर्ज करें
     </button>
 
     <button type="submit" name="mode" value="sensor">
-        Fetch From Sensor
+        सेंसर से जानकारी लें
     </button>
 
     <div id="manual-fields" style="display:none;">
 
         <br>
 
-        <label>Soil pH:</label>
+        <label>मिट्टी का pH:</label>
+
         <input
             type="number"
             step="0.1"
             min="0"
+            max="14"
             name="ph">
 
-        <label>Moisture (%):</label>
+        <label>नमी (%):</label>
+
         <input
             type="number"
             step="0.1"
             min="0"
+            max="100"
             name="moisture">
 
         <br><br>
 
         <button type="submit" name="mode" value="manual">
-            Calculate Using Manual Data
+            परिणाम देखें
         </button>
 
     </div>
@@ -103,10 +74,11 @@ button{
 
 <div class="result-card">
 
-    <h2>🌱 Recommended Crop</h2>
+    <h2>🌱 अनुशंसित फसल</h2>
+
     <h1>{{ best_crop }}</h1>
 
-    <p><strong>📊 Success Rate:</strong> {{ success_rate }}</p>
+    <p><strong>📊 सफलता की संभावना:</strong> {{ success_rate }}</p>
 
     <div class="suggestion">
         💡 {{ suggestion }}
@@ -114,17 +86,17 @@ button{
 
     <hr>
 
-    <p>🌿 <strong>Soil Status:</strong> {{ check_soil }}</p>
+    <p><strong>🌿 मिट्टी की स्थिति:</strong> {{ check_soil }}</p>
 
-    <p>🌾 <strong>Seed Required:</strong> {{ seed_required }} kg</p>
+    <p><strong>🌾 आवश्यक बीज:</strong> {{ seed_required }} किलोग्राम</p>
 
-    <p>📦 <strong>Expected Yield:</strong> {{ expected_yield }} Quintals</p>
+    <p><strong>📦 अनुमानित उत्पादन:</strong> {{ expected_yield }} क्विंटल</p>
 
-    <p>💰 <strong>Expected Revenue:</strong> ₹{{ revenue }}</p>
+    <p><strong>💰 अनुमानित आय:</strong> ₹{{ revenue }}</p>
 
-    <p>💸 <strong>Estimated Cost:</strong> ₹{{ cost }}</p>
+    <p><strong>💸 अनुमानित लागत:</strong> ₹{{ cost }}</p>
 
-    <p>🏆 <strong>Expected Profit:</strong> ₹{{ profit }}</p>
+    <p><strong>🏆 अनुमानित लाभ:</strong> ₹{{ profit }}</p>
 
 </div>
 
@@ -132,7 +104,12 @@ button{
 
 <script>
 function showManual() {
-    document.getElementById("manual-fields").style.display = "block";
+    const div = document.getElementById("manual-fields");
+
+    if (div.style.display === "none")
+        div.style.display = "block";
+    else
+        div.style.display = "none";
 }
 </script>
 

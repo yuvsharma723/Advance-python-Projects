@@ -1,6 +1,47 @@
 from Farm_functions import *
 from flask import Flask, render_template, request
+import serial
+import time
 
+PORT = "COM7"
+BAUD = 115200
+
+def connect_sensor():
+    try:
+        ser = serial.Serial(PORT, BAUD, timeout=1)
+        time.sleep(2)
+        return ser, "✅ Sensor Connected"
+
+    except serial.SerialException as e:
+        print(e)
+        return None, "❌ Sensor Not Connected"
+ser, sensor_update = connect_sensor()
+def read_sensor():
+
+    if ser is None:
+        return None, None
+
+    values_ph = []
+    values_moisture = []
+    attempts = 0
+
+    while len(values_ph) < 10 and attempts < 30:
+        attempts += 1
+
+        line = ser.readline().decode(errors="ignore").strip()
+
+        if not line:
+            continue
+
+        try:
+            adc, ph, moisture = line.split(",")
+            values_ph.append(float(ph))
+            values_moisture.append(float(moisture))
+        except ValueError:
+            continue
+
+    if len(values_ph) == 0:
+        return None, None
 app = Flask(__name__)
 
 @app.route("/", methods=["GET", "POST"])
@@ -24,7 +65,16 @@ def home():
             crop.actual_ph = float(request.form["ph"])
             crop.moisture_content = float(request.form["moisture"])
         elif mode == "sensor":
-            pass  # In a real application, you would fetch sensor data here
+            ph, moisture = read_sensor()
+
+            if ph is None:
+                return render_template(
+                    "index.html",
+                    sensor_update="❌ Sensor Not Connected",
+                    sensor_ph="--",
+                    sensor_moisture="--"
+                )
+            crop.actual_ph, crop.moisture_content = ph, moisture
         area = float(request.form["area"])
         if area <= 0:
             suggestion = "कृपया एक मान्य क्षेत्रफल दर्ज करें।"
@@ -63,7 +113,14 @@ def home():
             revenue=best_crop.calculate_revenue()
             cost=best_crop.calculate_cost()
             profit=best_crop.calculate_profit()
-        return render_template("index.html", suggestion=suggestion,success_rate=success_rate_str, best_crop=best_crop_name, check_soil=check_soil, seed_required=seed_required, expected_yield=expected_yield, revenue=revenue, cost=cost, profit=profit)
-    return render_template("index.html")
+        revenue = f" {revenue:,.0f}"
+        cost = f" {cost:,.0f}"
+        profit = f" {profit:,.0f}"
+        return render_template("index.html",sensor_update=sensor_update,sensor_ph=crop.actual_ph,sensor_moisture=crop.moisture_content, suggestion=suggestion, success_rate=success_rate_str, best_crop=best_crop_name, check_soil=check_soil, seed_required=seed_required, expected_yield=expected_yield, revenue=revenue, cost=cost, profit=profit)
+    return render_template(
+    "index.html",
+    sensor_update=sensor_update,
+    sensor_ph="--",
+    sensor_moisture="--")
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)
