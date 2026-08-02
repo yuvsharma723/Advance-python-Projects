@@ -9,13 +9,18 @@
 
 <h1>🌾 किसान मित्र 🌾</h1>
 
-<p><strong>{{ sensor_update }}</strong></p>
+<p>
+    <strong id="sensor-status">{{ sensor_update }}</strong>
+</p>
+<p>
+    <strong>🧪 pH :</strong>
+    <span id="sensor-ph" class="sensor-value">{{ sensor_ph }}</span>
+</p>
 
-<p><strong>🧪 pH :</strong>
-<span class="sensor-value">{{ sensor_ph }}</span></p>
-
-<p><strong>💧 नमी :</strong>
-<span class="sensor-value">{{ sensor_moisture }}</span></p>
+<p>
+    <strong>💧 नमी :</strong>
+    <span id="sensor-moisture" class="sensor-value">{{ sensor_moisture }}</span>
+</p>
 
 <form method="POST">
 
@@ -101,8 +106,28 @@
 </div>
 
 {% endif %}
+<button type="button" onclick="showGraphs()">
+    📊 ग्राफ देखें
+</button>
 
+<div id="graphs" style="display:none;">
+
+    <div class="graph-container">
+        <h2>🧪 pH का इतिहास</h2>
+        <canvas id="ph-chart"></canvas>
+    </div>
+
+    <div class="graph-container">
+        <h2>💧 मिट्टी की नमी का इतिहास</h2>
+        <canvas id="moisture-chart"></canvas>
+    </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+let phChart = null;
+let graphInterval = null;
+let moistureChart= null;
 function showManual() {
     const div = document.getElementById("manual-fields");
 
@@ -110,6 +135,223 @@ function showManual() {
         div.style.display = "block";
     else
         div.style.display = "none";
+}
+async function updateSensor() {
+    try {
+        const response = await fetch("/sensor");
+
+        if (!response.ok) {
+            throw new Error("Sensor request failed");
+        }
+
+        const data = await response.json();
+
+        const phElement = document.getElementById("sensor-ph");
+        const moistureElement = document.getElementById("sensor-moisture");
+        const statusElement = document.getElementById("sensor-status");
+
+        if (data.ph !== null && data.moisture !== null) {
+
+            phElement.textContent = Number(data.ph).toFixed(2);
+            moistureElement.textContent = Number(data.moisture).toFixed(1) + "%";
+
+            statusElement.textContent = "✅ Sensor Connected";
+
+        } else {
+
+            phElement.textContent = "--";
+            moistureElement.textContent = "--";
+
+            statusElement.textContent = "❌ Sensor Not Connected";
+        }
+
+    } catch (error) {
+
+        document.getElementById("sensor-status").textContent =
+            "❌ Sensor Not Connected";
+    }
+}
+
+updateSensor();
+
+setInterval(updateSensor, 1000);
+async function loadGraphData() {
+
+    try {
+
+        const response = await fetch("/sensor-history");
+
+        if (!response.ok) {
+            throw new Error("Could not fetch sensor history");
+        }
+
+        const history = await response.json();
+        const times = history.map(reading => reading.time);
+
+        const phValues = history.map(reading => reading.ph);
+
+        const moistureValues = history.map(reading => reading.moisture);
+        const phCanvas = document.getElementById("ph-chart");
+        const moistureCanvas = document.getElementById("moisture-chart");
+
+        if (phChart === null) {
+
+        phChart = new Chart(phCanvas, {
+            type: "line",
+
+            data: {
+                labels: times,
+
+                datasets: [{
+                    label: "pH",
+                    data: phValues,
+                    fill: true,
+                    pointRadius: 3,
+                    pointHoverRadius: 6,
+                    tension: 0.3
+                }]
+            },
+
+            options: {
+    responsive: true,
+
+    interaction: {
+        intersect: false,
+        mode: "index"
+    },
+
+    plugins: {
+        legend: {
+            display: true
+        },
+
+        tooltip: {
+            callbacks: {
+                label: function(context) {
+                    return "pH: " + context.parsed.y.toFixed(2);
+                }
+            }
+        }
+    },
+
+    scales: {
+        y: {
+            min: 0,
+            max: 14,
+
+            title: {
+                display: true,
+                text: "pH"
+            }
+        },
+
+        x: {
+            title: {
+                display: true,
+                text: "समय"
+            }
+        }
+    }
+}
+        });
+
+    } else {
+
+        phChart.data.labels = times;
+        phChart.data.datasets[0].data = phValues;
+
+        phChart.update();
+    }
+    if (moistureChart === null) {
+
+    moistureChart = new Chart(moistureCanvas, {
+        type: "line",
+
+        data: {
+            labels: times,
+
+            datasets: [{
+                label: "मिट्टी की नमी (%)",
+                data: moistureValues,
+                tension: 0.3,
+                fill: true,
+                pointRadius: 3,
+                pointHoverRadius: 6
+            }]
+        },
+
+        options: {
+            responsive: true,
+
+            interaction: {
+                intersect: false,
+                mode: "index"
+            },
+
+            plugins: {
+                legend: {
+                    display: true
+                },
+
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return "नमी: " + context.parsed.y.toFixed(1) + "%";
+                        }
+                    }
+                }
+            },
+
+            scales: {
+                y: {
+                    min: 0,
+                    max: 100,
+
+                    title: {
+                        display: true,
+                        text: "नमी (%)"
+                    }
+                },
+
+                x: {
+                    title: {
+                        display: true,
+                        text: "समय"
+                    }
+                }
+            }
+        }
+    });
+
+} else {
+
+    moistureChart.data.labels = times;
+    moistureChart.data.datasets[0].data = moistureValues;
+
+    moistureChart.update();
+}
+        console.log("Times:", times);
+        console.log("pH:", phValues);
+        console.log("Moisture:", moistureValues);
+        console.log("📊 Sensor History:", history);
+
+    } catch (error) {
+
+        console.error("❌ Graph data error:", error);
+
+    }
+}
+function showGraphs() {
+
+    const graphs = document.getElementById("graphs");
+
+    graphs.style.display = "block";
+
+    loadGraphData();
+
+    if (graphInterval === null) {
+        graphInterval = setInterval(loadGraphData, 2000);
+    }
 }
 </script>
 

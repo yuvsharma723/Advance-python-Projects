@@ -1,49 +1,47 @@
 from Farm_functions import *
 from flask import Flask, render_template, request
-import serial
-import time
-
-PORT = "COM7"
-BAUD = 115200
-
-def connect_sensor():
-    try:
-        ser = serial.Serial(PORT, BAUD, timeout=1)
-        time.sleep(2)
-        return ser, "✅ Sensor Connected"
-
-    except serial.SerialException as e:
-        print(e)
-        return None, "❌ Sensor Not Connected"
-ser, sensor_update = connect_sensor()
-def read_sensor():
-
-    if ser is None:
-        return None, None
-
-    values_ph = []
-    values_moisture = []
-    attempts = 0
-
-    while len(values_ph) < 10 and attempts < 30:
-        attempts += 1
-
-        line = ser.readline().decode(errors="ignore").strip()
-
-        if not line:
-            continue
-
-        try:
-            adc, ph, moisture = line.split(",")
-            values_ph.append(float(ph))
-            values_moisture.append(float(moisture))
-        except ValueError:
-            continue
-
-    if len(values_ph) == 0:
-        return None, None
+from datetime import datetime
 app = Flask(__name__)
+latest_sensor = {
+    "ph": None,
+    "moisture": None,
+    "adc": None
+}
+sensor_history = []
 
+@app.route("/sensor", methods=["POST", "GET"])
+def receive_sensor():
+
+    if request.method == "POST":
+        data = request.get_json()
+
+        if not data:
+            return {"status": "error", "message": "No data received"}, 400
+
+        latest_sensor["ph"] = data.get("ph")
+        latest_sensor["moisture"] = data.get("moisture")
+        latest_sensor["adc"] = data.get("adc")
+        sensor_history.append({
+            "time": datetime.now().strftime("%H:%M:%S"),
+            "ph": latest_sensor["ph"],
+            "moisture": latest_sensor["moisture"]
+        })
+
+        if len(sensor_history) > 100:
+            sensor_history.pop(0)
+
+        print("📡 Received from ESP32:", latest_sensor)
+
+        return {"status": "received"}, 200
+
+    return latest_sensor
+@app.route("/sensor-history")
+def sensor_history_data():
+    return sensor_history
+def sensor_status():
+    if latest_sensor["ph"] is None or latest_sensor["moisture"] is None:
+        return "❌ Sensor Not Connected"
+    return "✅ Sensor Connected"
 @app.route("/", methods=["GET", "POST"])
 def home():
     suggestion = ""
@@ -65,16 +63,20 @@ def home():
             crop.actual_ph = float(request.form["ph"])
             crop.moisture_content = float(request.form["moisture"])
         elif mode == "sensor":
-            ph, moisture = read_sensor()
 
-            if ph is None:
+            ph = latest_sensor["ph"]
+            moisture = latest_sensor["moisture"]
+
+            if ph is None or moisture is None:
                 return render_template(
                     "index.html",
-                    sensor_update="❌ Sensor Not Connected",
+                    sensor_update="❌ No Wi-Fi sensor data received",
                     sensor_ph="--",
                     sensor_moisture="--"
                 )
-            crop.actual_ph, crop.moisture_content = ph, moisture
+
+            crop.actual_ph = ph
+            crop.moisture_content = moisture
         area = float(request.form["area"])
         if area <= 0:
             suggestion = "कृपया एक मान्य क्षेत्रफल दर्ज करें।"
@@ -116,11 +118,11 @@ def home():
         revenue = f" {revenue:,.0f}"
         cost = f" {cost:,.0f}"
         profit = f" {profit:,.0f}"
-        return render_template("index.html",sensor_update=sensor_update,sensor_ph=crop.actual_ph,sensor_moisture=crop.moisture_content, suggestion=suggestion, success_rate=success_rate_str, best_crop=best_crop_name, check_soil=check_soil, seed_required=seed_required, expected_yield=expected_yield, revenue=revenue, cost=cost, profit=profit)
+        return render_template("index.html",sensor_update=sensor_status(),sensor_ph=crop.actual_ph,sensor_moisture=crop.moisture_content, suggestion=suggestion, success_rate=success_rate_str, best_crop=best_crop_name, check_soil=check_soil, seed_required=seed_required, expected_yield=expected_yield, revenue=revenue, cost=cost, profit=profit)
     return render_template(
     "index.html",
-    sensor_update=sensor_update,
+    sensor_update=sensor_status(),
     sensor_ph="--",
     sensor_moisture="--")
 if __name__ == "__main__":
-    app.run(debug=True, use_reloader=False)
+    app.run(debug=True,host="0.0.0.0", port=5000, use_reloader=False)
