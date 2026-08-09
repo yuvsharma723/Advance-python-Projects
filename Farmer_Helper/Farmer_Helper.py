@@ -49,7 +49,7 @@ def sensor_status():
     if last_sensor_time is None:
         return "❌ Sensor Not Connected"
 
-    if time.time() - last_sensor_time > 5:
+    if time.time() - last_sensor_time > 20:
         return "❌ Sensor Not Connected"
     if latest_sensor["ph"] is None or latest_sensor["moisture"] is None:
         return "❌ Sensor Not Connected"
