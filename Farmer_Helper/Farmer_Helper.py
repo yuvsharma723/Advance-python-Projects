@@ -154,6 +154,8 @@ def home():
 def check_crop():
 
     crop_name = request.form.get("crop_name")
+    ph = request.form.get("ph")
+    moisture = request.form.get("moisture")
 
     if ph in (None, "", "None", "--") or moisture in (None, "", "None", "--"):
          return render_template(

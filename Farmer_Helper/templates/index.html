@@ -10,80 +10,97 @@
 <h1>🌾 किसान मित्र 🌾</h1>
 
 <p>
-    <strong id="sensor-status">{{ sensor_update }}</strong>
+    <strong id="sensor-status" class = "sensor-status">{{ sensor_update }}</strong>
 </p>
-<p>
-    <strong>🧪 pH :</strong>
-    <span id="sensor-ph" class="sensor-value">{{ sensor_ph }}</span>
-</p>
+<div class="sensor-metrics">
 
-<p>
-    <strong>💧 नमी :</strong>
-    <span id="sensor-moisture" class="sensor-value">{{ sensor_moisture }}</span>
-</p>
+    <div class="sensor-card">
+        <span>🧪 Soil pH</span>
+        <strong id="sensor-ph">--</strong>
+    </div>
 
+    <div class="sensor-card">
+        <span>💧 Moisture</span>
+        <strong id="sensor-moisture">--</strong>
+    </div>
+
+</div>
 <form method="POST">
+<div class="analysis-card">
+
+    <h2>🌱 मिट्टी का विश्लेषण</h2>
 
     <label>क्षेत्रफल (एकड़):</label>
 
     <input
-       type="number"
-       name="area"
-       step="0.00001"
-       min="0.0001"
-       required>
+        type="number"
+        name="area"
+        step="0.00001"
+        min="0.0001"
+        required
+    >
 
-    <br><br>
-
-    <button type="button" onclick="showManual()">
-        स्वयं मान दर्ज करें
-    </button>
-
-    <button type="submit" name="mode" value="sensor">
-        सेंसर से जानकारी लें
-    </button>
-
-    <div id="manual-fields" style="display:none;">
-
-        <br>
-
-        <label>मिट्टी का pH:</label>
-
-        <input
-            type="number"
-            step="0.1"
-            min="0"
-            max="14"
-            name="ph">
-
-        <label>नमी (%):</label>
-
-        <input
-            type="number"
-            step="0.1"
-            min="0"
-            max="100"
-            name="moisture">
-
-        <br><br>
-
-        <button type="submit" name="mode" value="manual">
-            परिणाम देखें
+    <div class="input-actions">
+        <button type="button" onclick="showManual()">
+            ✏️ स्वयं मान दर्ज करें
         </button>
 
+        <button type="submit" name="mode" value="sensor">
+            📡 सेंसर से जानकारी लें
+        </button>
     </div>
+    <div id="manual-fields" style="display:none;">
+
+    <h3>✏️ मैनुअल मिट्टी डेटा</h3>
+
+    <div class="manual-inputs">
+
+        <div>
+            <label>मिट्टी का pH:</label>
+            <input
+                type="number"
+                step="0.1"
+                min="0"
+                max="14"
+                name="ph"
+            >
+        </div>
+
+        <div>
+            <label>नमी (%):</label>
+            <input
+                type="number"
+                step="0.1"
+                min="0"
+                max="100"
+                name="moisture"
+            >
+        </div>
+
+    </div>
+
+    <button type="submit" name="mode" value="manual">
+        परिणाम देखें
+    </button>
+
+</div>
 
 </form>
 
 {% if best_crop %}
 
-<div class="result-card">
+<div class="crop-recommendation">
 
-    <h2>🌱 अनुशंसित फसल</h2>
+    <div class="crop-label">
+        🌱 अनुशंसित फसल
+    </div>
 
     <h1>{{ best_crop }}</h1>
 
-    <p><strong>📊 सफलता की संभावना:</strong> {{ success_rate }}</p>
+    <div class="success-rate">
+        📊 सफलता की संभावना
+        <strong>{{ success_rate }}</strong>
+    </div>
 
     <div class="suggestion">
         💡 {{ suggestion }}
@@ -91,22 +108,45 @@
 
     <hr>
 
-    <p><strong>🌿 मिट्टी की स्थिति:</strong> {{ check_soil }}</p>
+   <div class="result-stats">
 
-    <p><strong>🌾 आवश्यक बीज:</strong> {{ seed_required }} किलोग्राम</p>
+    <div class="stat-card">
+        <span>🌿 मिट्टी की स्थिति</span>
+        <strong>{{ check_soil }}</strong>
+    </div>
 
-    <p><strong>📦 अनुमानित उत्पादन:</strong> {{ expected_yield }} क्विंटल</p>
+    <div class="stat-card">
+        <span>🌾 आवश्यक बीज</span>
+        <strong>{{ seed_required }} kg</strong>
+    </div>
 
-    <p><strong>💰 अनुमानित आय:</strong> ₹{{ revenue }}</p>
+    <div class="stat-card">
+        <span>📦 अनुमानित उत्पादन</span>
+        <strong>{{ expected_yield }} क्विंटल</strong>
+    </div>
 
-    <p><strong>💸 अनुमानित लागत:</strong> ₹{{ cost }}</p>
+    <div class="stat-card">
+        <span>💰 अनुमानित आय</span>
+        <strong>₹{{ revenue }}</strong>
+    </div>
 
-    <p><strong>🏆 अनुमानित लाभ:</strong> ₹{{ profit }}</p>
+    <div class="stat-card">
+        <span>💸 अनुमानित लागत</span>
+        <strong>₹{{ cost }}</strong>
+    </div>
+
+    <div class="stat-card">
+        <span>🏆 अनुमानित लाभ</span>
+        <strong>₹{{ profit }}</strong>
+    </div>
+
+</div>
 <hr>
 
-<h3>🌾 क्या आप दूसरी फसल भी देखना चाहते हैं?</h3>
+    <div class="another-crop">
 
-<form method="POST" action="/check-crop">
+    <h3>🔍 क्या आप दूसरी फसल की जाँच करना चाहते हैं?</h3>
+        <form method="POST" action="/check-crop">
 
     <input
         type="hidden"
@@ -125,38 +165,29 @@
         name="area"
         value="{{ area }}"
     >
+    <div class="crop-selector">
 
-    <select name="crop_name" required>
+        <select name="crop_name" required>
 
-        <option value="">
-            -- फसल चुनें --
-        </option>
+            <option value="">
+                -- फसल चुनें --
+            </option>
 
-        <option value="rice">
-            🌾 Rice
-        </option>
+            <option value="rice">🌾 Rice</option>
+            <option value="bajra">🌾 Bajra</option>
+            <option value="wheat">🌾 Wheat</option>
+            <option value="mustard">🌼 Mustard</option>
+            <option value="gram">🫘 Gram</option>
 
-        <option value="bajra">
-            🌾 Bajra
-        </option>
+        </select>
 
-        <option value="wheat">
-            🌾 Wheat
-        </option>
+        <button type="submit">
+            🔍 इस फसल को जाँचें
+        </button>
 
-        <option value="mustard">
-            🌼 Mustard
-        </option>
+    </div>
 
-        <option value="gram">
-            🫘 Gram
-        </option>
-
-    </select>
-
-    <button type="submit">
-        🔍 इस फसल को जाँचें
-    </button>
+</div>
 
 </form>
 </div>
@@ -165,9 +196,11 @@
 <button type="button" onclick="showGraphs()">
     📊 ग्राफ देखें
 </button>
-
 <div id="graphs" style="display:none;">
-
+    <div class="graphs-header">
+    <h2>📊 मिट्टी का इतिहास</h2>
+    <p>समय के साथ pH और नमी में बदलाव देखें</p>
+    </div>
     <div class="graph-container">
         <h2>🧪 pH का इतिहास</h2>
         <canvas id="ph-chart"></canvas>
@@ -205,6 +238,8 @@ async function updateSensor() {
         const phElement = document.getElementById("sensor-ph");
         const moistureElement = document.getElementById("sensor-moisture");
         const statusElement = document.getElementById("sensor-status");
+        statusElement.classList.remove("disconnected");
+        statusElement.classList.add("connected");
 
         if (data.status === "✅ Sensor Connected") {
 
@@ -220,12 +255,18 @@ async function updateSensor() {
             moistureElement.textContent = "--";
 
             statusElement.textContent = data.status;
+            statusElement.classList.remove("disconnected");
+            statusElement.classList.add("connected");
         }
 
     } catch (error) {
 
-        document.getElementById("sensor-status").textContent =
-            "❌ Sensor Not Connected";
+       const statusElement = document.getElementById("sensor-status");
+
+        statusElement.textContent = "❌ Sensor Not Connected";
+
+        statusElement.classList.remove("connected");
+        statusElement.classList.add("disconnected");
     }
 }
 
