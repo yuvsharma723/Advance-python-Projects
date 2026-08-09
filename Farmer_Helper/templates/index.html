@@ -25,7 +25,7 @@
     </div>
 
 </div>
-<form method="POST">
+<form method="POST" action="/">
 <div class="analysis-card">
 
     <h2>🌱 मिट्टी का विश्लेषण</h2>
@@ -255,8 +255,8 @@ async function updateSensor() {
             moistureElement.textContent = "--";
 
             statusElement.textContent = data.status;
-            statusElement.classList.remove("disconnected");
-            statusElement.classList.add("connected");
+            statusElement.classList.remove("connected");
+            statusElement.classList.add("disconnected");
         }
 
     } catch (error) {
