@@ -33,20 +33,20 @@ class crop:
         ph_msg = ""
 
         if self.moisture_content < self.moisture_min:
-            moisture_msg = "नमी कम है"
+            moisture_msg = "खेत में नमी कम हो गई है। कृपया सिंचाई करें (पानी दें) ताकि फसल सूखे नहीं"
         elif self.moisture_min <= self.moisture_content <= self.moisture_max:
             moisture_msg = "नमी उपयुक्त है"
         else:
-            moisture_msg = "नमी अधिक है"
+            moisture_msg = "खेत में पानी बहुत ज्यादा भर गया है। फसल को बचाने के लिए अतिरिक्त पानी बाहर निकालें।"
 
         if self.actual_ph < self.ph_min:
-            ph_msg = "pH कम है"
+            ph_msg = "मिट्टी का पीएच (pH) कम है, इसे बढ़ाने के लिए चूना (Lime) डालने की जरूरत है।"
         elif self.ph_min <= self.actual_ph <= self.ph_max:
             ph_msg = "pH उपयुक्त है"
         else:
-            ph_msg = "pH अधिक है"
-
-        return moisture_msg + " | " + ph_msg
+            ph_msg = "मिट्टी का पीएच (pH) ज्यादा है, इसे कम करने के लिए जिप्सम (Gypsum) डालने की जरूरत है।"
+        crop_message = f"{moisture_msg} | \n {ph_msg} |"
+        return crop_message
     def calculate_seed_required(self):
         if not self.valid:
             return

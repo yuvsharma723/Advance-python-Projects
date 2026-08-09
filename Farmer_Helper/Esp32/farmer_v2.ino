@@ -58,7 +58,7 @@ void SysProvEvent(arduino_event_t *sys_event) {
   }
 }
 const int PH_PIN = 34;
-const int MOISTURE_PIN = 4;
+const int MOISTURE_PIN = 32;
 String mode = "none";
 const int NUM_SAMPLES = 20;
 

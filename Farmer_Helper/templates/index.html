@@ -102,7 +102,63 @@
     <p><strong>💸 अनुमानित लागत:</strong> ₹{{ cost }}</p>
 
     <p><strong>🏆 अनुमानित लाभ:</strong> ₹{{ profit }}</p>
+<hr>
 
+<h3>🌾 क्या आप दूसरी फसल भी देखना चाहते हैं?</h3>
+
+<form method="POST" action="/check-crop">
+
+    <input
+        type="hidden"
+        name="ph"
+        value="{{ ph }}"
+    >
+
+    <input
+        type="hidden"
+        name="moisture"
+        value="{{ moisture }}"
+    >
+
+    <input
+        type="hidden"
+        name="area"
+        value="{{ area }}"
+    >
+
+    <select name="crop_name" required>
+
+        <option value="">
+            -- फसल चुनें --
+        </option>
+
+        <option value="rice">
+            🌾 Rice
+        </option>
+
+        <option value="bajra">
+            🌾 Bajra
+        </option>
+
+        <option value="wheat">
+            🌾 Wheat
+        </option>
+
+        <option value="mustard">
+            🌼 Mustard
+        </option>
+
+        <option value="gram">
+            🫘 Gram
+        </option>
+
+    </select>
+
+    <button type="submit">
+        🔍 इस फसल को जाँचें
+    </button>
+
+</form>
 </div>
 
 {% endif %}
@@ -150,19 +206,20 @@ async function updateSensor() {
         const moistureElement = document.getElementById("sensor-moisture");
         const statusElement = document.getElementById("sensor-status");
 
-        if (data.ph !== null && data.moisture !== null) {
+        if (data.status === "✅ Sensor Connected") {
 
             phElement.textContent = Number(data.ph).toFixed(2);
-            moistureElement.textContent = Number(data.moisture).toFixed(1) + "%";
+            moistureElement.textContent =
+                Number(data.moisture).toFixed(1) + "%";
 
-            statusElement.textContent = "✅ Sensor Connected";
+            statusElement.textContent = data.status;
 
         } else {
 
             phElement.textContent = "--";
             moistureElement.textContent = "--";
 
-            statusElement.textContent = "❌ Sensor Not Connected";
+            statusElement.textContent = data.status;
         }
 
     } catch (error) {
