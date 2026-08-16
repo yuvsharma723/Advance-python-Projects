@@ -1,6 +1,7 @@
 from Farm_functions import *
 from flask import Flask, render_template, request
 from datetime import datetime
+from zoneinfo import ZoneInfo
 import time
 
 app = Flask(__name__)
@@ -27,7 +28,7 @@ def receive_sensor():
         global last_sensor_time
         last_sensor_time = time.time()
         sensor_history.append({
-            "time": datetime.now().strftime("%H:%M:%S"),
+            "time": datetime.now(ZoneInfo("Asia/Kolkata")).strftime("%H:%M:%S"),
             "ph": latest_sensor["ph"],
             "moisture": latest_sensor["moisture"]
         })
